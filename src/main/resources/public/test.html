@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Employee REST APIs</title>
+
+    <script data-require="angular.js@1.4.x" src="https://code.angularjs.org/1.4.3/angular.js" data-semver="1.4.3"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" type='text/css' rel="stylesheet">
+</head>
+
+<body ng-controller="MainCtrl">
+
+<div class="row">
+    <div class='col-sm-12'>
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th class="text-center">
+                    Select
+                </th>
+                <th>id</th>
+                <th>First Name</th>
+                <th>Middle Initial</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Date of Employment</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="employee in employees">
+                <td class="text-center">
+                    <input type="checkbox" ng-model="employee.selected" ng-change="setSelectedEmployee(employee)"/>
+                </td>
+                <td>{{employee.id}}</td>
+                <td>{{employee.firstName}}</td>
+                <td>{{employee.middleInitial}}</td>
+                <td>{{employee.lastName}}</td>
+                <td>{{employee.dateOfBirth}}</td>
+                <td>{{employee.dateOfEmployment}}</td>
+                <td>{{employee.status}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class='col-sm-12' style="padding-left:30px">
+        <form class="form-horizontal" role="form" ng-submit="addRow()">
+            <div class="form-group">
+                <label class="col-md-2 control-label">First Name</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="firstName" ng-model="selectedEmployee.firstName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Middle Initial</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="middleInitial" ng-model="selectedEmployee.middleInitial" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Last Name</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="lastName" ng-model="selectedEmployee.lastName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Date of Birth</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="dateOfBirth" ng-model="selectedEmployee.dateOfBirth" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Hire Date</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="dateOfEmployment" ng-model="selectedEmployee.dateOfEmployment" />
+                </div>
+            </div>
+            <div class="form-group" style="padding-left:15px">
+                <div>
+                    <input type="button" value="Add" ng-if="!singleEmployeeSelected" ng-click="addRow()" class="btn btn-primary" />
+                    <input type="button" value="Edit" ng-if="singleEmployeeSelected" ng-click="edit()" class="btn btn-primary" />
+                    <input type="button" class="btn btn-danger" ng-click="remove()" ng-disabled="$scope.employees.selected.length" value="Remove">
+                </div>
+            </div>
+            <div class="alert alert-danger" role="alert" ng-if="errorMessage === true">
+                Record Already Exists!
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+    var serverIp = 'http://127.0.0.1:8080';
+
+    var app = angular.module("myApp", []);
+
+    app.controller('MainCtrl', ['$scope','$filter', '$http', function ($scope, $filter, $http){
+
+    $scope.employees = [
+        // { id: 1, 'fname': 'Abhishek', 'minitial': 'K', 'lname': 'Pabba', 'dob': '1963-12-31', 'hiredate': '2018-12-01', 'status': 'ACTIVE'},
+        // { id: 2, 'fname': 'Abhishek', 'minitial': 'K', 'lname': 'Pabba', 'dob': '1963-12-31', 'hiredate': '2018-12-01', 'status': 'ACTIVE'},
+        // { id: 3, 'fname': 'Abhishek', 'minitial': 'K', 'lname': 'Pabba', 'dob': '1963-12-31', 'hiredate': '2018-12-01', 'status': 'ACTIVE'},
+    ];
+
+    $http.get(serverIp+'/api/v1/employees').
+        then(function(response) {
+        $scope.employees = response.data;
+    });
+
+    $scope.errorMessage = false;
+
+    $scope.addRow = function () {
+
+        var parameter = JSON.stringify({
+            firstName:$scope.selectedEmployee.firstName,
+            middleInitial:$scope.selectedEmployee.middleInitial,
+            lastName:$scope.selectedEmployee.lastName,
+            dateOfBirth:$scope.selectedEmployee.dateOfBirth,
+            dateOfEmployment:$scope.selectedEmployee.dateOfEmployment
+        });
+
+        $http.post(serverIp+"/api/v1/employee", parameter).
+        success(function(data, status, headers, config) {
+            // this callback will be called asynchronously
+            // when the response is available
+            $scope.employees.push(data);
+            $scope.clearForm();
+        }).
+        error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert(status);
+        });
+    }
+
+    $scope.remove = function () {
+        var newDataList = [];
+        $scope.selectedAll = false;
+        angular.forEach($scope.employees, function(selected) {
+            if(!selected.selected) {
+                newDataList.push(selected);
+            } else {
+                var url = serverIp+"/api/v1/employee/" + selected.id;
+
+                var config = {headers: {
+                        'api_key': 'ABC'
+                    }
+                };
+
+                $http.delete(url, config).
+                success(function(data, status, headers, config) {
+                    // this callback will be called asynchronously
+                    // when the response is available
+                }).
+                error(function(data, status, headers, config) {
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                    newDataList.push(selected);
+                    alert(status);
+                });
+            }
+        });
+        $scope.employees = newDataList;
+        $scope.clearForm();
+    }
+
+    $scope.singleEmployeeSelected = false;
+
+    $scope.setSelectedEmployee = function (employee){
+        if($scope.employees.filter(x => x.selected).length > 1){
+            $scope.selectedEmployee = null;
+            $scope.singleEmployeeSelected = false;
+        } else {
+            $scope.selectedEmployee = angular.copy($scope.employees.find(x => x.selected));
+            $scope.singleEmployeeSelected = !!$scope.selectedEmployee;
+        }
+    }
+
+    $scope.edit = function() {
+
+        var parameter = JSON.stringify({
+            firstName:$scope.selectedEmployee.firstName,
+            middleInitial:$scope.selectedEmployee.middleInitial,
+            lastName:$scope.selectedEmployee.lastName,
+            dateOfBirth:$scope.selectedEmployee.dateOfBirth,
+            dateOfEmployment:$scope.selectedEmployee.dateOfEmployment
+        });
+
+        var url = serverIp+"/api/v1/employee/" + $scope.selectedEmployee.id;
+
+        $http.put(url, parameter).
+        success(function(data, status, headers, config) {
+            // this callback will be called asynchronously
+            // when the response is available
+            var employeeToEdit = $scope.employees.find(x => x.id === $scope.selectedEmployee.id);
+            employeeToEdit.id = data.id;
+            employeeToEdit.firstName = data.firstName;
+            employeeToEdit.middleInitial = data.middleInitial;
+            employeeToEdit.lastName = data.lastName;
+            employeeToEdit.dateOfBirth = data.dateOfBirth;
+            employeeToEdit.dateOfEmployment = data.dateOfEmployment;
+            employeeToEdit.status = data.status;
+            $scope.clearForm();
+        }).
+        error(function(data, status, headers, config) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert(status);
+        });
+    }
+
+    $scope.clearForm = function() {
+        $scope.selectedEmployee.firstName = '';
+        $scope.selectedEmployee.middleInitial = '';
+        $scope.selectedEmployee.lastName = '';
+        $scope.selectedEmployee.dateOfBirth = '';
+        $scope.selectedEmployee.dateOfEmployment = '';
+    }
+
+    }]);
+</script>

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+    "firstName": "Peter",
+    "middleInitial": "T",
+    "lastName": "Nikolla",
+    "dateOfBirth": "1963-12-31",
+    "dateOfEmployment": "2018-12-01",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "d290f1ee-6c54-4b01-90e6-d701748f0852",
+    "firstName": "Donna",
+    "middleInitial": "M",
+    "lastName": "Nikolla",
+    "dateOfBirth": "1965-06-07",
+    "dateOfEmployment": "2018-10-01",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "d290f1ee-6c54-4b01-90e6-d701748f0853",
+    "firstName": "Issac",
+    "middleInitial": "T",
+    "lastName": "Nikolla",
+    "dateOfBirth": "1980-04-28",
+    "dateOfEmployment": "2018-11-01",
+    "status": "ACTIVE"
+  }
+]
