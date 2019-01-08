@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import com.employee.main.model.BasicEmployee;
 import com.employee.main.model.Employee;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +24,7 @@ public class EmployeeDAO {
         TypeReference<List<Employee>> typeReference = new TypeReference<List<Employee>>(){};
         InputStream inputStream = TypeReference.class.getResourceAsStream("/data/employees.json");
         try {
-            employees = mapper.readValue(inputStream,typeReference);
+            employees = mapper.readValue(inputStream, typeReference);
         } catch (IOException e){
             System.out.println(e.getMessage());
             System.exit(-1);
@@ -53,11 +54,14 @@ public class EmployeeDAO {
      * @param newEmployee
      * @return
      */
-    public Employee addEmployee(Employee newEmployee) {
-        newEmployee.setId(getUniqueId());
-        newEmployee.setStatus(Employee.Status.ACTIVE);
-        employees.add(newEmployee);
-        return newEmployee;
+    public Employee addEmployee(BasicEmployee newEmployee) {
+        Employee employee = new Employee(newEmployee);
+
+        employee.setId(getUniqueId());
+        employee.setStatus(Employee.Status.ACTIVE);
+
+        employees.add(employee);
+        return employee;
     }
 
     /**
@@ -66,7 +70,7 @@ public class EmployeeDAO {
      * @param updatedEmployee
      * @return
      */
-    public Employee updateEmployee(String id, Employee updatedEmployee) {
+    public Employee updateEmployee(String id, BasicEmployee updatedEmployee) {
         for(Employee employee : employees) {
             if (employee.getId().equals(id) ) {
                 String firstName = updatedEmployee.getFirstName();
@@ -113,6 +117,10 @@ public class EmployeeDAO {
         return activeEmployees;
     }
 
+    /**
+     * Get Unique Identifier
+     * @return Unique Id
+     */
     private String getUniqueId() {
         boolean unique;
         UUID uuid;

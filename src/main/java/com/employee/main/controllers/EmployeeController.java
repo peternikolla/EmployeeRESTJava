@@ -1,6 +1,7 @@
 package com.employee.main.controllers;
 
 import com.employee.main.dao.EmployeeDAO;
+import com.employee.main.model.BasicEmployee;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,7 @@ public class EmployeeController {
      * @param newEmployee
      * @return
      */
-    @ApiOperation(value="Add Employee",response=Employee.class)
+    @ApiOperation(value="Add Employee",response= Employee.class)
     @ApiResponses(value={
             @ApiResponse(code=200,message="Added")
     })
@@ -57,7 +58,7 @@ public class EmployeeController {
             method=RequestMethod.POST,
             produces="application/json"
     )
-    public ResponseEntity<Employee> AddEmployee(@Valid @RequestBody Employee newEmployee) {
+    public ResponseEntity<Employee> AddEmployee(@Valid @RequestBody BasicEmployee newEmployee) {
         Employee retEmployee = employeeRepository.addEmployee(newEmployee);
         return new ResponseEntity<Employee>(retEmployee, HttpStatus.OK);
     }
@@ -77,7 +78,7 @@ public class EmployeeController {
             method=RequestMethod.PUT,
             produces="application/json"
     )
-    public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee updatedEmployee) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody BasicEmployee updatedEmployee) {
         try {
             Employee retEmployee = employeeRepository.updateEmployee(id, updatedEmployee);
             return new ResponseEntity<Employee>(retEmployee, HttpStatus.OK);
