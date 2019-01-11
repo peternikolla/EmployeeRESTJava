@@ -58,7 +58,7 @@ public class EmployeeController {
             method=RequestMethod.POST,
             produces="application/json"
     )
-    public ResponseEntity<Employee> AddEmployee(@Valid @RequestBody BasicEmployee newEmployee) {
+    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody BasicEmployee newEmployee) {
         Employee retEmployee = employeeRepository.addEmployee(newEmployee);
         return new ResponseEntity<Employee>(retEmployee, HttpStatus.OK);
     }
