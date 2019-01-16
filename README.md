@@ -56,7 +56,7 @@ All data should be persisted into either memory, or externally. Please include i
 
 ### Delete Employee
 **Method:** DELETE  
-**URI:** \<host>/api/v1/employee/{id}
-**Header**: Api_key 
+**URI:** \<host>/api/v1/employee/{id} 
+**Header**: api_key 
 
 
