@@ -36,7 +36,10 @@ All data should be persisted into either memory, or externally. Please include i
 
 # REST API Endpoints
 
-### Display/Test REST API
+### Test UI
+/test 
+
+### REST API Doc.
 /swagger-ui.html
 
 ### Get Employee
