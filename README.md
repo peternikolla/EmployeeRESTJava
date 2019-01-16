@@ -1,5 +1,5 @@
 # EmployeeREST Project
-This project is built using Spring Boot and Swagger.
+This project is built using Spring Boot and Swagger.  I also added a test UI written in AngualrJS.
 
 **Employee REST server**
 
